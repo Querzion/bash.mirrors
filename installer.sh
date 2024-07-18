@@ -15,10 +15,10 @@ NC='\033[0m' # No Color
 ################################################################################################## FILE & FOLDER PATHS
 
 # Location
-APPLICATION="arch-suite"
+APPLICATION="mirrors"
 BASE="$HOME/bash.$APPLICATION"
 FILES="$BASE/files"
-
+PD="10"
 
 ################################################################################################## INSTALLATION
 
@@ -26,7 +26,7 @@ FILES="$BASE/files"
 update_parallel_downloads() {
     local conf_file="/etc/pacman.conf"
     local search_string="#ParallelDownloads = 5"
-    local replace_string="ParallelDownloads = 10"
+    local replace_string="ParallelDownloads = $PD"
     
     if [[ -f $conf_file ]]; then
         sudo sed -i "s/$search_string/$replace_string/" "$conf_file"
@@ -64,15 +64,14 @@ enable_multilib() {
 
 ################################################################################################## MAIN
 
-# Call the function
+# Activate MultiLib if not already.
 enable_multilib
 
-# Call the function
+# Activate ParallelDownloads and change to 10.
 update_parallel_downloads
 
+# Fast Track mirrors.
 echo -e "${YELLOW} Fast Track Mirrors - Changing to Fastest Mirrors. ${NC}" 
-
-# Fast Track mirrors
 sudo pacman-mirrors --fasttrack
 
 echo -e "${PURPLE} Pre-Configuration Done! ${NC}" 
