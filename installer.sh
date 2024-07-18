@@ -30,9 +30,9 @@ update_parallel_downloads() {
     
     if [[ -f $conf_file ]]; then
         sudo sed -i "s/$search_string/$replace_string/" "$conf_file"
-        echo "Updated ParallelDownloads in $conf_file."
+        echo "${CYAN} Updated ParallelDownloads in $conf_file. ${NC}"
     else
-        echo "Error: $conf_file not found."
+        echo "${RED} Error: $conf_file not found. ${NC}"
     fi
 }
 
@@ -41,13 +41,13 @@ enable_multilib() {
     local pacman_conf="/etc/pacman.conf"
     
     if [ ! -f "$pacman_conf" ]; then
-        echo "Error: $pacman_conf not found."
+        echo "${RED} Error: $pacman_conf not found. ${NC}"
         return 1
     fi
 
     # Check if the multilib section is already uncommented
     if grep -q '^\[multilib\]' "$pacman_conf"; then
-        echo "Multilib repository is already enabled."
+        echo "${YELLOW} Multilib repository is already enabled. ${GREEN}"
         return 0
     fi
 
@@ -57,18 +57,22 @@ enable_multilib() {
     # Uncomment the multilib section
     sudo sed -i '/#\[multilib\]/{s/^#//;n;s/^#//}' "$pacman_conf"
 
-    echo "Multilib repository has been enabled."
+    echo -e "${GREEN} Multilib repository has been enabled. ${NC}"
     return 0
 }
 
 
 ################################################################################################## MAIN
 
-# Fast Track mirrors
-sudo pacman-mirrors --fasttrack
-
 # Call the function
 enable_multilib
 
 # Call the function
 update_parallel_downloads
+
+echo -e "${YELLOW} Fast Track Mirrors - Changing to Fastest Mirrors. ${NC}" 
+
+# Fast Track mirrors
+sudo pacman-mirrors --fasttrack
+
+echo -e "${PURPLE} Pre-Configuration Done! ${NC}" 
